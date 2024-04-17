@@ -60,6 +60,13 @@ public class ProductControler {
 		System.out.println(a);
 		System.out.println(NoSignIn);
 		User acc = (User) session.getAttribute("acc");
+		
+		if (session.getAttribute("acc") == null)
+			session.setAttribute("countCart", "0");
+		else {
+			session.setAttribute("AddToCartErr", null);
+		}
+
 		if (remember != null) {
 			acc = userService.findByIdAndRole(user_name.getValue(), "user");
 			session.setAttribute("acc", acc);
@@ -70,8 +77,7 @@ public class ProductControler {
 			List<Cart> listCart = cartService.GetAllCartByUser_id(acc.getId());
 			session.setAttribute("countCart", listCart.size());
 		}
-		if (session.getAttribute("acc") == null)
-			session.setAttribute("countCart", "0");
+		
 		model.addAttribute("error_momo", error_momo);
 		model.addAttribute("NoSignIn", NoSignIn);
 
