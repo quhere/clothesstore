@@ -51,17 +51,17 @@ public class UserController {
 
 	@Autowired
 	CookieService cookie;
-	
+
 	@Value("${spring.mail.username}")
-    private String fromMail;
+	private String fromMail;
 
 	@GetMapping("/signin")
 	public String SigInView(Model model) throws Exception {
 		Cookie login_name = cookie.read("login_name");
 		Cookie pass = cookie.read("pass");
-		if (login_name != null)
+		Cookie remember = cookie.read("remember");
+		if (login_name != null && pass != null && remember != null) {
 			model.addAttribute("login_name", login_name.getValue());
-		if (pass != null) {
 			String decodedValue = new String(Base64.getDecoder().decode(pass.getValue()));
 			model.addAttribute("pass", decodedValue);
 		}
@@ -92,19 +92,16 @@ public class UserController {
 	@PostMapping("/signin")
 	public String SignIn(@ModelAttribute("login-name") String loginname, @ModelAttribute("password") String password,
 			@RequestParam(value = "remember", defaultValue = "false") boolean remember, Model model) throws Exception {
-//		User user = userService.getUserById(loginname);
+
 		User user = userService.findByIdAndRole(loginname, "user");
 		if (user != null) {
 			String decodedValue = new String(Base64.getDecoder().decode(user.getPassword()));
+			cookie.create("user_name", user.getId(), 3);
+			cookie.create("login_name", user.getId(), 3);
 			if (decodedValue.equals(password)) {
 				if (remember == true) {
-					cookie.create("user_name", user.getId(), 3);
-					cookie.create("login_name", user.getId(), 3);
 					cookie.create("pass", user.getPassword(), 3);
 					cookie.create("remember", "remember", 3);
-				} else {
-					cookie.create("login_name", user.getId(), 3);
-					cookie.delete("pass");
 				}
 				session.setAttribute("acc", user);
 				List<Cart> listCart = cartService.GetAllCartByUser_id(user.getId());
@@ -143,7 +140,7 @@ public class UserController {
 	@GetMapping("/signout")
 	public String SignOut(Model model) {
 		session.setAttribute("acc", null);
-		cookie.delete("remember");
+		cookie.delete("user_name");
 		return "redirect:/home";
 	}
 
@@ -215,7 +212,7 @@ public class UserController {
 			return "rediect:/home";
 		}
 	}
-	
+
 	@GetMapping("/forgot")
 	public String forGotView(Model model) {
 		String error_forgot = (String) session.getAttribute("error_forgot");
@@ -236,7 +233,7 @@ public class UserController {
 			return "redirect:/code";
 		}
 	}
-	
+
 	@GetMapping("/code")
 	public String codeView(Model model) throws Exception {
 		User userForgot = (User) session.getAttribute("userForgot");
@@ -260,7 +257,7 @@ public class UserController {
 		model.addAttribute("sendcode", "sendcode");
 		return "signin";
 	}
-	
+
 	@PostMapping("/code")
 	public String codeHandel(@ModelAttribute("code_input") int code_input, Model model) throws Exception {
 		int code = (int) session.getAttribute("code");
@@ -274,7 +271,7 @@ public class UserController {
 		}
 
 	}
-	
+
 	@GetMapping("/newpass")
 	public String newPassView(Model model) {
 		String error_newpass = (String) session.getAttribute("error_newpass");
