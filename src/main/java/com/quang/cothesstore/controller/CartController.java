@@ -74,8 +74,7 @@ public class CartController {
 		List<Cart> listCart = (List<Cart>) session.getAttribute("listCart");
 		int i = 0;
 		for (Cart o : listCart) {
-//			System.out.println("count"+i);
-//			String a=(String) model.getAttribute("count" + i);
+		
 			String a = request.getParameter("count" + i);
 			int count = Integer.parseInt(a);
 			System.out.println(count);
