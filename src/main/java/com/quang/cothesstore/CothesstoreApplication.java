@@ -26,12 +26,6 @@ public class CothesstoreApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(CothesstoreApplication.class, args);
 	}
-
-	@Override
-	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Bean
 	public Cloudinary cloudinaryConfig() {
@@ -42,6 +36,12 @@ public class CothesstoreApplication implements CommandLineRunner {
 		config.put("api_secret", apiSecret);
 		cloudinary = new Cloudinary(config);
 		return cloudinary;
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

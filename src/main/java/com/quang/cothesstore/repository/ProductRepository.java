@@ -34,4 +34,6 @@ public interface ProductRepository extends JpaRepository<Product,Integer>{
 	
 	@Query(value="select * from product p where p.category_id = ?1 ORDER BY p.sold DESC LIMIT 4;",nativeQuery = true)
 	List<Product> findTop4ProductByCategory_id(int id);
+
+	void deleteById(int id);
 }

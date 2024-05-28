@@ -196,7 +196,6 @@
 			}
 		}
 		$button.parent().find('input').val(newVal);
-		
 		// Gọi sự kiện click cho nút cập nhật giỏ hàng
         $('.btnUpdate').click();
 	});

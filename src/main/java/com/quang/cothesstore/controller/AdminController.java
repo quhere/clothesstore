@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,15 +56,15 @@ public class AdminController {
 	@Autowired
 	CloudinaryService cloudinaryService;
 
-//	@Autowired
-//	MailService mailService;
+	// @Autowired
+	// MailService mailService;
 
 	@Autowired
 	HttpSession session;
 
 	@Autowired
 	ProductImageService productImageService;
-	
+
 	@GetMapping("signin-admin")
 	public String SignInAdminView(Model model) {
 		String err_sign_admin = (String) session.getAttribute("err_sign_admin");
@@ -71,7 +72,7 @@ public class AdminController {
 		session.setAttribute("err_sign_admin", null);
 		return "signin-admin";
 	}
-	
+
 	@PostMapping("signin-admin")
 	public String SignInAdminHandel(@ModelAttribute("login-name") String login_name,
 			@ModelAttribute("pass") String pass, Model model) throws Exception {
@@ -90,13 +91,13 @@ public class AdminController {
 			}
 		}
 	}
-	
+
 	@GetMapping("logout-admin")
 	public String LogOutAdmin(Model model) {
 		session.setAttribute("admin", null);
 		return "redirect:/signin-admin";
 	}
-	
+
 	@GetMapping("dashboard")
 	public String DashboardView(Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -123,7 +124,7 @@ public class AdminController {
 			return "dashboard";
 		}
 	}
-	
+
 	@GetMapping("/dashboard-invoice/{id}")
 	public String InvoiceView(@PathVariable int id, Model model, HttpServletRequest request) {
 		Order order = orderService.findById(id);
@@ -132,7 +133,7 @@ public class AdminController {
 		model.addAttribute("order", order);
 		return "dashboard-invoice";
 	}
-	
+
 	@GetMapping("/dashboard-orders")
 	public String DashboardOrderView(Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -145,7 +146,7 @@ public class AdminController {
 			return "dashboard-orders";
 		}
 	}
-	
+
 	@GetMapping("/dashboard-orders/{page}")
 	public String DashboardOrderPageView(@PathVariable int page, Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -158,22 +159,24 @@ public class AdminController {
 			return "dashboard-orders";
 		}
 	}
-	
-//	@PostMapping("/send-message")
-//	public String SendMessage(Model model, @ModelAttribute("message") String message,
-//			@ModelAttribute("email") String email, HttpServletRequest request) throws Exception {
-//		String referer = request.getHeader("Referer");
-//		System.out.println(message);
-//		System.out.println(email);
-//		Mail mail = new Mail();
-//		mail.setMailFrom("qqaibietgidau@gmail.com");
-//		mail.setMailTo(email);
-//		mail.setMailSubject("This is message from Male fashion.");
-//		mail.setMailContent(message);
-//		mailService.sendEmail(mail);
-//		return "redirect:" + referer;
-//	}
-	
+
+	// @PostMapping("/send-message")
+	// public String SendMessage(Model model, @ModelAttribute("message") String
+	// message,
+	// @ModelAttribute("email") String email, HttpServletRequest request) throws
+	// Exception {
+	// String referer = request.getHeader("Referer");
+	// System.out.println(message);
+	// System.out.println(email);
+	// Mail mail = new Mail();
+	// mail.setMailFrom("qqaibietgidau@gmail.com");
+	// mail.setMailTo(email);
+	// mail.setMailSubject("This is message from Male fashion.");
+	// mail.setMailContent(message);
+	// mailService.sendEmail(mail);
+	// return "redirect:" + referer;
+	// }
+
 	@GetMapping("/delete-order/{id}")
 	public String DeleteOrder(@PathVariable int id, Model model, HttpServletRequest request) throws Exception {
 		User admin = (User) session.getAttribute("admin");
@@ -192,7 +195,7 @@ public class AdminController {
 			return "redirect:" + referer;
 		}
 	}
-	
+
 	@GetMapping("dashboard-wallet")
 	public String DashboardWalletView(Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -221,7 +224,7 @@ public class AdminController {
 			return "dashboard-wallet";
 		}
 	}
-	
+
 	@GetMapping("dashboard-myproducts")
 	public String DashboardMyProductView(Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -236,7 +239,7 @@ public class AdminController {
 			return "dashboard-myproducts";
 		}
 	}
-	
+
 	@GetMapping("/dashboard-myproducts/edit/{id}")
 	public String DashboardMyProductEditView(@PathVariable int id, Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -247,9 +250,7 @@ public class AdminController {
 			Product product = productService.getProductById(id);
 			model.addAttribute("product", product);
 			model.addAttribute("listCategories", listCategories);
-			String editProduct = (String) session.getAttribute("editProduct");
-			model.addAttribute("editProduct", editProduct);
-			session.setAttribute("editProduct", null);
+			model.addAttribute("idProduct", id);
 			return "dashboard-my-products-edit";
 		}
 	}
@@ -267,10 +268,6 @@ public class AdminController {
 			if (listImage != null) {
 				Category cate = categoryService.getCategoryById(category);
 				Product product = productService.getProductById(product_id);
-//				System.out.println(cate);
-//				long millis = System.currentTimeMillis();
-//				Date create_at = new java.sql.Date(millis);
-//				Product newPro = new Product();
 				product.setProduct_Name(product_name);
 				product.setPrice(Integer.parseInt(price));
 				product.setQuantity(Integer.parseInt(availability));
@@ -291,15 +288,22 @@ public class AdminController {
 			} else {
 				return "redirect:/dashboard-myproducts/edit/" + product_id;
 			}
-
 		}
 	}
-	
+
+	// delete session attribute editProduct
+	@PostMapping("/clearSessionEditProduct")
+	public ResponseEntity<Void> clearSessionEditProduct(HttpSession session) {
+		System.out.println("DELETE EDITPRODUCT");
+		session.removeAttribute("editProduct");
+		return ResponseEntity.ok().build();
+	}
+
 	@GetMapping("/dashboard-myproducts/delete-image/{id}")
 	public String DeleteImage(@PathVariable int id, HttpServletRequest request) {
 		String referer = request.getHeader("Referer");
 		productImageService.deleteById(id);
-		return "redirect:"+referer;
+		return "redirect:" + referer;
 	}
 
 	@GetMapping("dashboard-myproducts/{page}")
@@ -316,7 +320,7 @@ public class AdminController {
 			return "dashboard-myproducts";
 		}
 	}
-	
+
 	@PostMapping("/dashboard-myproduct/search")
 	public String DashboardMyproductSearch(@ModelAttribute("search-input") String search_input,
 			@ModelAttribute("category-selected") int category_selected, Model model) {
@@ -354,7 +358,7 @@ public class AdminController {
 			return "dashboard-myproducts";
 		}
 	}
-	
+
 	@GetMapping("/dashboard-myproduct/search/{page}")
 	public String DashboardMyproductSearchPage(@PathVariable int page, Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -363,7 +367,7 @@ public class AdminController {
 		} else {
 			String search_input = (String) session.getAttribute("search_input_dashboard");
 			int category_selected = (int) session.getAttribute("category_selected");
-//			int category_selected = 0;
+			// int category_selected = 0;
 			Page<Product> pageProduct = null;
 			Pageable pageable = PageRequest.of(page, 3);
 			if (category_selected > 0) {
@@ -381,8 +385,8 @@ public class AdminController {
 			session.setAttribute("search_input_dashboard", search_input);
 			return "dashboard-myproducts";
 		}
-	} 
-	
+	}
+
 	@GetMapping("dashboard-addproduct")
 	public String DashboardAddProductView(Model model) {
 		User admin = (User) session.getAttribute("admin");
@@ -439,6 +443,13 @@ public class AdminController {
 			}
 
 		}
+	}
+
+	@PostMapping("/delete-product/{id}")
+	public String DeleteProduct(@PathVariable int id, Model model) {
+		System.out.println("REMOVE PRODUCT "+id);
+		productService.deleteById(id);
+		return "redirect:/dashboard-myproducts";
 	}
 
 	@GetMapping("dashboard-myprofile")
@@ -512,5 +523,5 @@ public class AdminController {
 			return "redirect:/dashboard-myprofile";
 		}
 	}
-	
+
 }

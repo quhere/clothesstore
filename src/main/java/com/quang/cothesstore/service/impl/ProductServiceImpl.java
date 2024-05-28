@@ -76,5 +76,10 @@ public class ProductServiceImpl implements ProductService {
 	public List<Product> findTop4ProductByCategory_id(int id) {
 		return productRepository.findTop4ProductByCategory_id(id);
 	}
+
+	@Override
+	public void deleteById(int id) {
+		productRepository.deleteById(id);
+	}
 	
 }

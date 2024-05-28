@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
 
-<!-- Basic Page Needs
+	<!-- Basic Page Needs
 ================================================== -->
-<title>Admin Page</title>
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Admin Page</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<!-- CSS
+	<!-- CSS
 ================================================== -->
-<link rel="stylesheet" href="/listeo/css/style.css">
-<link rel="stylesheet" href="/listeo/css/main-color.css" id="colors">
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<link rel="icon" href="/img/logo-3.png">
+	<link rel="stylesheet" href="/listeo/css/style.css">
+	<link rel="stylesheet" href="/listeo/css/main-color.css" id="colors">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<link rel="icon" href="/img/logo-3.png">
 </head>
 
 <body>
 
 	<!-- Wrapper -->
 	<div id="wrapper">
-		<script th:if="${editProduct != null}">
-			swal("Edit successful product!", "", "success");
+		<script th:if="${session.editProduct != null}">
+			swal("Edit successful product!", "", "success").then(function () {
+				/* Sau khi thông báo được đóng lại, xóa biến editProduct */
+				fetch('/clearSessionEditProduct', { method: 'POST' });
+			});
 		</script>
 		<!-- Header Container
 ================================================== -->
@@ -38,15 +41,13 @@
 						<!-- Logo -->
 						<div id="logo">
 							<a href="index.html"><img src="/images/logo.png" alt=""></a>
-							<a href="index.html" class="dashboard-logo"><img
-								src="/images/logo2.png" alt=""></a>
+							<a href="index.html" class="dashboard-logo"><img src="/images/logo2.png" alt=""></a>
 						</div>
 
 						<!-- Mobile Navigation -->
 						<div class="mmenu-trigger">
 							<button class="hamburger hamburger--collapse" type="button">
-								<span class="hamburger-box"> <span
-									class="hamburger-inner"></span>
+								<span class="hamburger-box"> <span class="hamburger-inner"></span>
 								</span>
 							</button>
 						</div>
@@ -66,20 +67,18 @@
 									Account
 								</div>
 								<ul>
-									<li><a th:href="@{/dashboard}"><i
-											class="sl sl-icon-settings"></i> Dashboard</a></li>
-									<li><a th:href="@{/dashboard-myprofile}"><i
-											class="sl sl-icon-envelope-open"></i> My Profile</a></li>
-									<li><a th:href="@{/dashboard-orders}"><i
-											class="fa fa-calendar-check-o"></i> Orders</a></li>
-									<li><a th:href="@{/logout-admin}"><i
-											class="sl sl-icon-power"></i> Logout</a></li>
+									<li><a th:href="@{/dashboard}"><i class="sl sl-icon-settings"></i> Dashboard</a>
+									</li>
+									<li><a th:href="@{/dashboard-myprofile}"><i class="sl sl-icon-envelope-open"></i> My
+											Profile</a></li>
+									<li><a th:href="@{/dashboard-orders}"><i class="fa fa-calendar-check-o"></i>
+											Orders</a></li>
+									<li><a th:href="@{/logout-admin}"><i class="sl sl-icon-power"></i> Logout</a></li>
 								</ul>
 							</div>
 
-							<a th:href="@{/dashboard-addproduct}"
-								class="button border with-icon">Add Product<i
-								class="sl sl-icon-plus"></i></a>
+							<a th:href="@{/dashboard-addproduct}" class="button border with-icon">Add Product<i
+									class="sl sl-icon-plus"></i></a>
 						</div>
 						<!-- Header Widget / End -->
 					</div>
@@ -101,37 +100,31 @@
 	================================================== -->
 
 			<!-- Responsive Navigation Trigger -->
-			<a href="#" class="dashboard-responsive-nav-trigger"><i
-				class="fa fa-reorder"></i> Dashboard Navigation</a>
+			<a href="#" class="dashboard-responsive-nav-trigger"><i class="fa fa-reorder"></i> Dashboard Navigation</a>
 
-			
-						<div class="dashboard-nav">
+
+			<div class="dashboard-nav">
 				<div class="dashboard-nav-inner">
 
 					<ul data-submenu-title="Main">
-						<li><a th:href="@{/dashboard}"><i
-								class="sl sl-icon-settings"></i> Dashboard</a></li>
-						<li><a th:href="@{/dashboard-orders}"><i
-								class="fa fa-calendar-check-o"></i> Orders</a></li>
-						<li><a th:href="@{/dashboard-wallet}"><i
-								class="sl sl-icon-wallet"></i> Wallet</a></li>
+						<li><a th:href="@{/dashboard}"><i class="sl sl-icon-settings"></i> Dashboard</a></li>
+						<li><a th:href="@{/dashboard-orders}"><i class="fa fa-calendar-check-o"></i> Orders</a></li>
+						<li><a th:href="@{/dashboard-wallet}"><i class="sl sl-icon-wallet"></i> Wallet</a></li>
 					</ul>
 
 					<ul data-submenu-title="Products">
-						<li class="active"><a th:href="@{/dashboard-myproducts}"><i
-								class="sl sl-icon-layers"></i> My products</a>
+						<li class="active"><a th:href="@{/dashboard-myproducts}"><i class="sl sl-icon-layers"></i> My
+								products</a>
 							<ul>
 								<li><a>Edit Product</a></li>
-							</ul></li>
-						<li><a th:href="@{/dashboard-addproduct}"><i
-								class="sl sl-icon-plus"></i> Add Product</a></li>
+							</ul>
+						</li>
+						<li><a th:href="@{/dashboard-addproduct}"><i class="sl sl-icon-plus"></i> Add Product</a></li>
 					</ul>
 
 					<ul data-submenu-title="Account">
-						<li><a th:href="@{/dashboard-myprofile}"><i
-								class="sl sl-icon-user"></i> My Profile</a></li>
-						<li><a th:href="@{/logout-admin}"><i
-								class="sl sl-icon-power"></i> Logout</a></li>
+						<li><a th:href="@{/dashboard-myprofile}"><i class="sl sl-icon-user"></i> My Profile</a></li>
+						<li><a th:href="@{/logout-admin}"><i class="sl sl-icon-power"></i> Logout</a></li>
 					</ul>
 					<ul data-submenu-title="">
 						<li><a th:href="@{/home}"><i class="im im-icon-Home"></i>
@@ -145,8 +138,7 @@
 			<!-- Content
 	================================================== -->
 			<div class="dashboard-content">
-				<form action="/dashboard-myproducts/edit" method="post"
-					enctype="multipart/form-data">
+				<form action="/dashboard-myproducts/edit" method="post" enctype="multipart/form-data">
 					<!-- Titlebar -->
 					<div id="titlebar">
 						<div class="row">
@@ -186,8 +178,7 @@
 											<h5>Product Name</h5>
 											<input style="display: none;" name="product_id" th:value="${product.id}">
 											<input name="product_name" class="search-field" type="text"
-												th:value="${product.product_Name}"
-												placeholder="Product Name" />
+												th:value="${product.product_Name}" placeholder="Product Name" />
 										</div>
 									</div>
 
@@ -202,8 +193,8 @@
 
 										<div class="col-md-4">
 											<h5>Availability</h5>
-											<input th:value="${product.quantity}" name="availability"
-												type="text" placeholder="Availability">
+											<input th:value="${product.quantity}" name="availability" type="text"
+												placeholder="Availability">
 										</div>
 										<!-- Status -->
 										<div class="col-md-4">
@@ -212,8 +203,7 @@
 												<option th:value="${product.category.id}" label="blank"
 													th:text="${product.category.category_Name}"></option>
 												<th:block th:each="y : ${listCategories}">
-													<option th:value="${y.id}"
-														th:if="${y.id != product.category.id}"
+													<option th:value="${y.id}" th:if="${y.id != product.category.id}"
 														th:text="${y.category_Name}"></option>
 												</th:block>
 											</select>
@@ -238,9 +228,9 @@
 									<!-- Description -->
 									<div class="form">
 										<h5>Description</h5>
-										<textarea th:field="${product.description}" name="description"
-											class="WYSIWYG" cols="40" rows="3" id="summary"
-											spellcheck="true" placeholder="Description"></textarea>
+										<textarea th:field="${product.description}" name="description" class="WYSIWYG"
+											cols="40" rows="3" id="summary" spellcheck="true"
+											placeholder="Description"></textarea>
 									</div>
 								</div>
 								<!-- Section / End -->
@@ -259,9 +249,9 @@
 										<!-- Kết hợp hình ảnh và nội dung cho mội phần tử trong slideshow-->
 										<th:block th:each="y: ${product.productImage}">
 											<div class="mySlides fade">
-												<a th:href="@{/dashboard-myproducts/delete-image/{id}(id=${y.id})}" class="delete_img"> <i
-													style="color: #fff; line-height: 30px;"
-													class="sl sl-icon-close"></i>
+												<a th:href="@{/dashboard-myproducts/delete-image/{id}(id=${y.id})}"
+													class="delete_img"> <i style="color: #fff; line-height: 30px;"
+														class="sl sl-icon-close"></i>
 
 												</a> <img th:src="${y.url_Image}" style="width: 100%">
 											</div>
@@ -274,7 +264,8 @@
 									<!-- Nút tròn điều khiển slideshow-->
 									<div style="text-align: center">
 										<th:block th:each="y: ${product.productImage}">
-											<span class="dotw" th:onclick="'currentSlide('+ ${yStat.index+1} +')'"></span>
+											<span class="dotw"
+												th:onclick="'currentSlide('+ ${yStat.index+1} +')'"></span>
 										</th:block>
 
 									</div>
@@ -285,8 +276,8 @@
 											<div class="upload__btn-box">
 												<label class="upload__btn" style="border-radius: 50px;">
 													<p style="margin-bottom: 0px;">Add images</p> <input
-													name="listImage" accept="image/*" type="file"
-													data-max_length="20" class="upload__inputfile" multiple>
+														name="listImage" accept="image/*" type="file"
+														data-max_length="20" class="upload__inputfile" multiple>
 												</label>
 											</div>
 											<div class="upload__img-wrap"></div>
@@ -328,8 +319,7 @@
 	<!-- Scripts
 ================================================== -->
 	<script type="text/javascript" src="/scripts/jquery-3.6.0.min.js"></script>
-	<script type="text/javascript"
-		src="/scripts/jquery-migrate-3.3.2.min.js"></script>
+	<script type="text/javascript" src="/scripts/jquery-migrate-3.3.2.min.js"></script>
 	<script type="text/javascript" src="/scripts/mmenu.min.js"></script>
 	<script type="text/javascript" src="/scripts/chosen.min.js"></script>
 	<script type="text/javascript" src="/scripts/slick.min.js"></script>
@@ -370,7 +360,7 @@
 		}
 	</script>
 	<script>
-		jQuery(document).ready(function() {
+		jQuery(document).ready(function () {
 			ImgUpload();
 		});
 
@@ -379,72 +369,72 @@
 			var imgArray = [];
 
 			$('.upload__inputfile')
-					.each(
-							function() {
-								$(this)
-										.on(
-												'change',
-												function(e) {
-													imgWrap = $(this)
-															.closest(
-																	'.upload__box')
-															.find(
-																	'.upload__img-wrap');
-													var maxLength = $(this)
-															.attr(
-																	'data-max_length');
+				.each(
+					function () {
+						$(this)
+							.on(
+								'change',
+								function (e) {
+									imgWrap = $(this)
+										.closest(
+											'.upload__box')
+										.find(
+											'.upload__img-wrap');
+									var maxLength = $(this)
+										.attr(
+											'data-max_length');
 
-													var files = e.target.files;
-													var filesArr = Array.prototype.slice
-															.call(files);
-													var iterator = 0;
-													filesArr
-															.forEach(function(
-																	f, index) {
+									var files = e.target.files;
+									var filesArr = Array.prototype.slice
+										.call(files);
+									var iterator = 0;
+									filesArr
+										.forEach(function (
+											f, index) {
 
-																if (!f.type
-																		.match('image.*')) {
-																	return;
-																}
+											if (!f.type
+												.match('image.*')) {
+												return;
+											}
 
-																if (imgArray.length > maxLength) {
-																	return false
-																} else {
-																	var len = 0;
-																	for (var i = 0; i < imgArray.length; i++) {
-																		if (imgArray[i] !== undefined) {
-																			len++;
-																		}
-																	}
-																	if (len > maxLength) {
-																		return false;
-																	} else {
-																		imgArray
-																				.push(f);
+											if (imgArray.length > maxLength) {
+												return false
+											} else {
+												var len = 0;
+												for (var i = 0; i < imgArray.length; i++) {
+													if (imgArray[i] !== undefined) {
+														len++;
+													}
+												}
+												if (len > maxLength) {
+													return false;
+												} else {
+													imgArray
+														.push(f);
 
-																		var reader = new FileReader();
-																		reader.onload = function(
-																				e) {
-																			var html = "<div class='upload__img-box'><div style='background-image: url("
-																					+ e.target.result
-																					+ ")' data-number='"
-																					+ $(".upload__img-close").length
-																					+ "' data-file='"
-																					+ f.name
-																					+ "' class='img-bg'><div class='upload__img-close'></div></div></div>";
-																			imgWrap
-																					.append(html);
-																			iterator++;
-																		}
-																		reader
-																				.readAsDataURL(f);
-																	}
-																}
-															});
-												});
-							});
+													var reader = new FileReader();
+													reader.onload = function (
+														e) {
+														var html = "<div class='upload__img-box'><div style='background-image: url("
+															+ e.target.result
+															+ ")' data-number='"
+															+ $(".upload__img-close").length
+															+ "' data-file='"
+															+ f.name
+															+ "' class='img-bg'><div class='upload__img-close'></div></div></div>";
+														imgWrap
+															.append(html);
+														iterator++;
+													}
+													reader
+														.readAsDataURL(f);
+												}
+											}
+										});
+								});
+					});
 
-			$('body').on('click', ".upload__img-close", function(e) {
+			$('body').on('click', ".upload__img-close", function (e) {
 				var file = $(this).parent().data("file");
 				for (var i = 0; i < imgArray.length; i++) {
 					if (imgArray[i].name === file) {
@@ -458,4 +448,5 @@
 	</script>
 
 </body>
+
 </html>
