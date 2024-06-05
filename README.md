@@ -1,2 +1,2 @@
-# shoestore
-demo shoe store with Spring Boot
+# clothes store
+demo clothes store with Spring Boot
