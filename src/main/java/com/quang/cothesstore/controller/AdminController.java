@@ -160,23 +160,6 @@ public class AdminController {
 		}
 	}
 
-	// @PostMapping("/send-message")
-	// public String SendMessage(Model model, @ModelAttribute("message") String
-	// message,
-	// @ModelAttribute("email") String email, HttpServletRequest request) throws
-	// Exception {
-	// String referer = request.getHeader("Referer");
-	// System.out.println(message);
-	// System.out.println(email);
-	// Mail mail = new Mail();
-	// mail.setMailFrom("qqaibietgidau@gmail.com");
-	// mail.setMailTo(email);
-	// mail.setMailSubject("This is message from Male fashion.");
-	// mail.setMailContent(message);
-	// mailService.sendEmail(mail);
-	// return "redirect:" + referer;
-	// }
-
 	@GetMapping("/delete-order/{id}")
 	public String DeleteOrder(@PathVariable int id, Model model, HttpServletRequest request) throws Exception {
 		User admin = (User) session.getAttribute("admin");
