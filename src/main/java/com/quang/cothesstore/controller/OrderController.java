@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.quang.cothesstore.service.impl.CartServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quang.cothesstore.entity.Cart;
 import com.quang.cothesstore.entity.Order;
 import com.quang.cothesstore.entity.Order_Item;
@@ -32,7 +32,8 @@ import jakarta.servlet.http.HttpSession;
 public class OrderController {
 	@Autowired
 	CartService cartService;
-
+	@Autowired
+	CartServiceImpl cartServiceImpl;
 	@Autowired
 	ProductService productService;
 
@@ -84,7 +85,7 @@ public class OrderController {
 		int Total = Integer.parseInt(a);
 		String status = "Pending";
 		String payment_method = null;
-		if (payOndelivery == true) {
+		if (payOndelivery) {
 			payment_method = "Payment on delivery";
 		} else {
 			payment_method = "Payment with momo";
@@ -109,6 +110,7 @@ public class OrderController {
 			String referer = resp.getHeader("Referer");
 			return "redirect:" + referer;
 		} else {
+			System.out.println("The order hear");
 			orderService.saveOrder(newOrder);
 			List<Order> listOrder = orderService.getAllOrderByUser_Id(user.getId());
 			newOrder = listOrder.get(listOrder.size() - 1);
@@ -125,10 +127,14 @@ public class OrderController {
 				cartService.deleteById(y.getId());
 			}
 			
-			List<Cart> Cart = cartService.GetAllCartByUser_id(user.getId());
-			for (Cart cart : listCart) {
-				cartService.deleteById(cart.getId());
-			}
+//			List<Cart> carts = cartService.GetAllCartByUser_id(user.getId());
+//			System.out.println("find cart of " + user.getId());
+//			for (Cart cart : carts) {
+//				cartService.deleteById(cart.getId());
+//				System.out.println("delete cart " + cart.getId());
+//			}
+
+			session.setAttribute("listCart", "");
 			
 			listOrder = orderService.getAllOrderByUser_Id(user.getId());
 			newOrder = listOrder.get(listOrder.size() - 1);

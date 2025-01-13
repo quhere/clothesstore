@@ -17,10 +17,10 @@ public interface OrderRepository extends JpaRepository<Order,Integer>{
 	
 	@Query(value="Select * From `order` o ORDER BY o.id DESC LIMIT 5;",nativeQuery = true)
 	List<Order> findTop5RecentOrder();
-	
-	@Query(value="Select distinct o.user_id From `order` o ORDER BY o.id DESC LIMIT 5;",nativeQuery = true)
+
+	@Query(value="SELECT DISTINCT o.user_id FROM `order` o ORDER BY o.user_id LIMIT 5", nativeQuery = true)
 	List<String> findTop5RecentCustomer();
-	
+
 	Page<Order> findAll(Pageable pageable);
 
 	void deleteById(int id);

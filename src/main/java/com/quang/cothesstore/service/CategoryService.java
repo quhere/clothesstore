@@ -3,6 +3,7 @@ package com.quang.cothesstore.service;
 import java.util.List;
 
 import com.quang.cothesstore.entity.Category;
+import org.springframework.stereotype.Service;
 
 public interface CategoryService {
 	Category saveCategory(Category category);

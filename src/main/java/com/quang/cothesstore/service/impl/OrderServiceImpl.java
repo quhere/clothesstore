@@ -56,6 +56,4 @@ public class OrderServiceImpl implements OrderService{
 	public List<Order> findTop5OrderByPaymentMethod(String payment_method) {
 		return orderRepository.findTop5OrderByPaymentMethod(payment_method);
 	}
-	
-	
 }
